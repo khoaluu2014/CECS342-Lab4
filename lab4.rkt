@@ -15,4 +15,19 @@
     (if (null? L) L (if (f (car L)) (cons (car L) (filter f (cdr L))) (filter f (cdr L))))))
 
 (display (filter (lambda (num) (< num 5)) '(3 9 5 8 2 4 7)))
+(display "\n")
+;3
 
+(define rotations
+  (lambda (L)
+    (letrec ([helper (lambda (Ls A B)
+                       (if (null? B)
+                           Ls
+                           (helper (append Ls (list (append B A)))
+                                   (append A (list (car B)))
+                                   (cdr B))))])
+      (helper '() '() L))))
+(display (rotations '(a b c d e)))
+(display "\n")
+
+(display (list '(b c d e) '(a b c d e)))
