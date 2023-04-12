@@ -20,14 +20,35 @@
 
 (define rotations
   (lambda (L)
-    (letrec ([helper (lambda (Ls A B)
-                       (if (null? B)
-                           Ls
-                           (helper (append Ls (list (append B A)))
-                                   (append A (list (car B)))
-                                   (cdr B))))])
+    (letrec ([helper
+              (lambda (Ls A B)
+                (if (null? B)
+                    Ls
+                    (helper (append Ls (list (append B A))) (append A (list (car B))) (cdr B))))])
       (helper '() '() L))))
 (display (rotations '(a b c d e)))
 (display "\n")
 
-(display (list '(b c d e) '(a b c d e)))
+(require scheme/mpair)
+(require r5rs)
+(define-syntax while
+  (syntax-rules ()
+    [(while cond body ...)
+     (let start_loop ()
+       (if cond
+           (begin
+             body ...
+             (start_loop))
+           #f))]))
+
+(define unique2
+  (lambda (L)
+    (if (null? L)
+        L
+        (let ([A L] [B (cdr L)])
+          (while (not (null? B))
+                 (if (eqv? (car A) (car B)) (set-cdr! A (cdr B)) (set! A (cdr A)))
+                 (set! B (cdr B)))
+          L))))
+
+(unique2 '(1 2 2 3 3 3 4 5 5 6 6 6 6))
